@@ -1,6 +1,7 @@
 ﻿using ApiGestaoFacil.DataContexts;
 using ApiGestaoFacil.Dtos;
 using ApiGestaoFacil.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +11,14 @@ namespace ApiGestaoFacil.Controllers
     [Route("servidores")]
     public class ServidorController : Controller
     {
-
         private readonly AppDbContext _context;
 
-        public ServidorController(AppDbContext context)
+        private readonly IMapper _mappper;
+
+        public ServidorController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mappper = mapper;
         }
 
         [HttpGet]
@@ -58,12 +61,7 @@ namespace ApiGestaoFacil.Controllers
         {
             try
             {
-                var servidor = new Servidor()
-                {
-                    Nome = item.Nome,
-                    CPF = item.CPF,
-                    Siape = item.Siape,
-                };
+                var servidor = _mappper.Map<Servidor>(item);
 
                 await _context.Servidores.AddAsync(servidor);
                 await _context.SaveChangesAsync();
