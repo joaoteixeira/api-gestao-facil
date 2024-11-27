@@ -23,7 +23,9 @@ namespace ApiGestaoFacil.Controllers
         {
             try
             {
-                var listaServidores = await _context.Servidores.ToListAsync();
+                var listaServidores = await _context.Servidores.Include(e => e.Campus).FirstOrDefaultAsync();
+
+                System.Console.WriteLine(listaServidores?.Campus?.Nome);
 
                 return Ok(listaServidores);
             }
@@ -56,24 +58,24 @@ namespace ApiGestaoFacil.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ServidorDto item)
         {
-            try
-            {
-                var servidor = new Servidor()
-                {
-                    Nome = item.Nome,
-                    CPF = item.CPF,
-                    Siape = item.Siape,
-                };
+            // try
+            // {
+            //     var servidor = new Servidor()
+            //     {
+            //         Nome = item.Nome,
+            //         CPF = item.CPF,
+            //         Siape = item.Siape,
+            //     };
 
-                await _context.Servidores.AddAsync(servidor);
-                await _context.SaveChangesAsync();
+            //     await _context.Servidores.AddAsync(servidor);
+            //     await _context.SaveChangesAsync();
 
-                return Created("", servidor);
-            }
-            catch (Exception e)
-            {
-                return Problem(e.Message);
-            }
+            //     return Created("", servidor);
+            // }
+            // catch (Exception e)
+            // {
+                return Problem();
+            // }
         }
 
         [HttpPut("{id}")]

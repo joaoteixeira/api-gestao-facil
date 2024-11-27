@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using ApiGestaoFacil.DataContexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,16 +6,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Busca string de conexão e adiciona a classe AppDbContext Service do EF
+// Busca string de conexï¿½o e adiciona a classe AppDbContext Service do EF
 var connectionString = builder.Configuration.GetConnectionString("default");
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 );
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
 
