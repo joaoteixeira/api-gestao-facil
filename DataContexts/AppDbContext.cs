@@ -13,11 +13,17 @@ namespace ApiGestaoFacil.DataContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //modelBuilder.Entity<Campus>()
+            //    .HasMany(e => e.Servidores)
+            //    .WithOne(e => e.Campus)
+            //    .HasForeignKey(e => e.CampusId)
+            //    .IsRequired(false);
+
             modelBuilder.Entity<Servidor>()
                 .HasOne(e => e.Campus)
                 .WithMany(e => e.Servidores)
-                .HasForeignKey(e => e.CampusId);
-                
+                .HasForeignKey(e => e.CampusId)
+                .IsRequired(false);
         }
     }
 }

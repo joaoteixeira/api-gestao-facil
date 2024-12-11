@@ -22,7 +22,6 @@ public class Servidor
     [Column("id_cam_fk")]
     public int CampusId { get; set; }
 
-    [ForeignKey("CampusId")]
     public virtual Campus? Campus { get; set; }
 }
 

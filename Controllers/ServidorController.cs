@@ -23,9 +23,16 @@ namespace ApiGestaoFacil.Controllers
         {
             try
             {
-                var listaServidores = await _context.Servidores.Include(e => e.Campus).FirstOrDefaultAsync();
-
-                System.Console.WriteLine(listaServidores?.Campus?.Nome);
+                var listaServidores = await _context.Servidores
+                    .Include(e => e.Campus)
+                    .Select(e => new {
+                        e.Id,
+                        e.CPF,
+                        e.Nome,
+                        e.Siape,
+                        Campus = new { e.Campus.Id, e.Campus.Nome }
+                    })
+                    .ToListAsync();
 
                 return Ok(listaServidores);
             }

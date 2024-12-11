@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiGestaoFacil.Models;
@@ -14,5 +15,6 @@ public class Campus
     [Column("nome_cam")]
     public required string Nome { get; set; }
 
+    //[JsonIgnore]
     public ICollection<Servidor>? Servidores { get; set; }
 }
