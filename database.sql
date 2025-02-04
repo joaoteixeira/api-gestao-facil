@@ -28,8 +28,34 @@ INSERT INTO servidor VALUES
     (null, "Reinaldo Lima", "546.342.453-23", 4467722, 2),
     (null, "Emi de Oliveira", "234.234.652.42", 3245674, 3),
     (null, "Jefferson Antonio", "321.443.721-00", 3245675, 1);
-    
+
+CREATE TABLE funcao (
+    id_fun INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome_fun VARCHAR(255) NOT NULL
+);
+
+INSERT INTO funcao VALUES 
+	(null, "Docente"),
+    (null, "Coordenador");
+
+CREATE TABLE servidor_funcao (
+    servidor_id INTEGER NOT NULL,
+    funcao_id INTEGER NOT NULL,
+    PRIMARY KEY (servidor_id, funcao_id),
+    FOREIGN KEY (servidor_id) REFERENCES servidor (id_ser) ON DELETE CASCADE,
+    FOREIGN KEY (funcao_id) REFERENCES funcao (id_fun) ON DELETE CASCADE);
+
+INSERT INTO servidor_funcao VALUES 
+	(1, 1),
+    (1, 2),
+    (2, 1),
+    (3, 2);
+
 SELECT * FROM servidor, campus WHERE id_cam_fk = id_cam;
 SELECT * FROM servidor;
 SELECT * FROM campus;
+
+SELECT * FROM servidor S
+    LEFT JOIN servidor_funcao SF ON SF.servidor_id = S.id_ser
+    LEFT JOIN funcao F ON F.id_fun = SF.funcao_id;
 

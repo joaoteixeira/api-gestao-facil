@@ -25,12 +25,15 @@ namespace ApiGestaoFacil.Controllers
             {
                 var listaServidores = await _context.Servidores
                     .Include(e => e.Campus)
-                    .Select(e => new {
+                    .Include(s => s.Funcoes)
+                    .Select(e => new
+                    {
                         e.Id,
                         e.CPF,
                         e.Nome,
                         e.Siape,
-                        Campus = new { e.Campus.Id, e.Campus.Nome }
+                        Campus = new { e.Campus.Id, e.Campus.Nome },
+                        Funcoes = e.Funcoes.Select(f => new { f.Id, f.Nome }).ToList() // Projeção das funções
                     })
                     .ToListAsync();
 
@@ -49,7 +52,7 @@ namespace ApiGestaoFacil.Controllers
             {
                 var servidor = await _context.Servidores.Where(s => s.Id == id).FirstOrDefaultAsync();
 
-                if(servidor == null)
+                if (servidor == null)
                 {
                     return NotFound($"Servidor #{id} não encontrado");
                 }
@@ -65,24 +68,30 @@ namespace ApiGestaoFacil.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ServidorDto item)
         {
-            // try
-            // {
-            //     var servidor = new Servidor()
-            //     {
-            //         Nome = item.Nome,
-            //         CPF = item.CPF,
-            //         Siape = item.Siape,
-            //     };
+            try
+            {
+                if (!await CampusExists(item.CampusId))
+                {
+                    return BadRequest("O CampusId fornecido não existe.");
+                }
 
-            //     await _context.Servidores.AddAsync(servidor);
-            //     await _context.SaveChangesAsync();
+                var servidor = new Servidor()
+                {
+                    Nome = item.Nome,
+                    CPF = item.CPF,
+                    Siape = item.Siape,
+                    CampusId = item.CampusId
+                };
 
-            //     return Created("", servidor);
-            // }
-            // catch (Exception e)
-            // {
+                await _context.Servidores.AddAsync(servidor);
+                await _context.SaveChangesAsync();
+
+                return Created("", servidor);
+            }
+            catch (Exception e)
+            {
                 return Problem();
-            // }
+            }
         }
 
         [HttpPut("{id}")]
@@ -92,7 +101,7 @@ namespace ApiGestaoFacil.Controllers
             {
                 var servidor = await _context.Servidores.FindAsync(id);
 
-                if(servidor is null)
+                if (servidor is null)
                 {
                     return NotFound();
                 }
@@ -111,7 +120,7 @@ namespace ApiGestaoFacil.Controllers
                 return Problem(e.Message);
             }
         }
-        
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -133,6 +142,11 @@ namespace ApiGestaoFacil.Controllers
             {
                 return Problem(e.Message);
             }
+        }
+
+        private async Task<bool> CampusExists(int campusId)
+        {
+            return await _context.Campus.AnyAsync(c => c.Id == campusId);
         }
     }
 }

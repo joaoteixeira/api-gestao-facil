@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiGestaoFacil.Models;
 
-[Table("servidor")]
+[Table("servidor"), PrimaryKey(nameof(Id))]
 public class Servidor
 {
     [Column("id_ser")]
@@ -23,5 +23,7 @@ public class Servidor
     public int CampusId { get; set; }
 
     public virtual Campus? Campus { get; set; }
+
+    public List<Funcao> Funcoes { get; } = [];
 }
 
