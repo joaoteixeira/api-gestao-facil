@@ -59,3 +59,24 @@ SELECT * FROM servidor S
     LEFT JOIN servidor_funcao SF ON SF.servidor_id = S.id_ser
     LEFT JOIN funcao F ON F.id_fun = SF.funcao_id;
 
+CREATE TABLE portaria (
+    id_por INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    titulo_por VARCHAR(255) NOT NULL,
+    descricao_por TEXT NULL,
+    numero_por INT NOT NULL,
+    ano_por INT NOT NULL,
+    data_criacao_por DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    campus_id_por INT NOT NULL,
+    FOREIGN KEY (campus_id_por) REFERENCES campus (id_cam)
+);
+
+CREATE TABLE portaria_servidor (
+    id_psd INT NOT NULL AUTO_INCREMENT,
+    servidor_id_psd INT NOT NULL,
+    portaria_id_psd INT NOT NULL,
+    presidente_psd BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (id_psd),
+    FOREIGN KEY (servidor_id_psd) REFERENCES servidor (id_ser) ON DELETE CASCADE,
+    FOREIGN KEY (portaria_id_psd) REFERENCES portaria (id_por) ON DELETE CASCADE
+);
+

@@ -9,8 +9,14 @@ namespace ApiGestaoFacil.DataContexts
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Servidor> Servidores { get; set; }
+
         public DbSet<Campus> Campus { get; set; }
+
         public DbSet<Funcao> Funcoes { get; set; }
+
+        public DbSet<Portaria> Portarias { get; set; }
+
+        public DbSet<PortariaServidor> PortariaServidores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,7 +40,25 @@ namespace ApiGestaoFacil.DataContexts
                     j => j.HasOne<Funcao>().WithMany().HasForeignKey("funcao_id"), // Chave estrangeira para Funcao
                     j => j.HasOne<Servidor>().WithMany().HasForeignKey("servidor_id"), // Chave estrangeira para Servidor
                     j => j.ToTable("servidor_funcao") // Nome da tabela de junção
-        );
+                );
+            
+            modelBuilder.Entity<Portaria>()
+                .HasOne(e => e.Campus)
+                .WithMany(e => e.Portarias)
+                .HasForeignKey(e => e.CampusId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<PortariaServidor>()
+                .HasOne(e => e.Servidor)
+                .WithMany(e => e.PortariaServidores)
+                .HasForeignKey(e => e.ServidorId)
+                .IsRequired(false);
+
+            modelBuilder.Entity<PortariaServidor>()
+                .HasOne(e => e.Portaria)
+                .WithMany(e => e.PortariaServidores)
+                .HasForeignKey(e => e.PortariaId)
+                .IsRequired(false);
         }
     }
 }

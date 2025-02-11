@@ -25,5 +25,7 @@ public class Servidor
     public virtual Campus? Campus { get; set; }
 
     public List<Funcao> Funcoes { get; } = [];
+
+    public ICollection<PortariaServidor>? PortariaServidores { get; set; }
 }
 

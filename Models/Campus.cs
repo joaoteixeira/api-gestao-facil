@@ -17,4 +17,6 @@ public class Campus
 
     //[JsonIgnore]
     public ICollection<Servidor>? Servidores { get; set; }
+
+    public ICollection<Portaria>? Portarias { get; set; } = [];
 }
